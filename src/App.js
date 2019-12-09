@@ -9,7 +9,9 @@ import Button from "./Button";
 import AlbumCover from "./AlbumCover";
 
 const apiToken =
-  "BQD20V3kslqP0wTuMC8oDvyD7vHFMJZAHuS45KXkrddLVQXryg17LsScw6exAON0FZyhS5hNUltmRZ0m9p_U3TuMOAMqoj7bOW7cFa1f9B1vz4Swj5tp8qNavCp6kjCn_0rX77_yFIiZu4iPUnkTVifsOfNHILvQYQ";
+  "BQBghh2XjDPax7HfrdUj1-eroRTIk8jcBE48ICVM-zmW1Y3qpWZL36v4WZ6Lh58X-9OCOjOll6CqtNteyAtP6gw7GA7XHbczK2REGvEi4wjeMqFN1K1PF3-5MewZTDPWeeYGlK1A4Rshsl8v-tcM6ko_QVjHN78DXw";
+const url =
+  "https://api.spotify.com/v1/playlists/1wCB2uVwBCIbJA9rar5B77/tracks?fields=items(track(id%2Cname%2Cpreview_url%2Calbum(images)))&limit=20";
 
 function shuffleArray(array) {
   let counter = array.length;
@@ -48,12 +50,13 @@ class App extends Component {
 
   setGameTimeout = () => {
     console.log("Set new timeout");
-    this.timeout = setTimeout(this.startNewGame, 10000);
+    this.timeout = setTimeout(this.startNewGame, 5000);
   };
 
   startNewGame = () => {
     const length = this.state.tracks.length;
     const currentTrackIndex = getRandomNumber(length);
+
     let wrongTrackIndex1 = getRandomNumber(length);
     while (wrongTrackIndex1 === currentTrackIndex) {
       wrongTrackIndex1 = getRandomNumber(length);
@@ -80,15 +83,12 @@ class App extends Component {
   };
 
   componentDidMount() {
-    fetch(
-      "	https://api.spotify.com/v1/playlists/1wCB2uVwBCIbJA9rar5B77/tracks",
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + apiToken
-        }
+    fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + apiToken
       }
-    )
+    })
       .then(response => response.json())
       .then(data => {
         this.setState(
@@ -105,12 +105,12 @@ class App extends Component {
 
   onClick = id => {
     if (id === this.state.currentTrack.track.id) {
-      return swal("T'es trop forte", "success").then(() => {
-        clearTimeout(this.timeout);
+      clearTimeout(this.timeout);
+      return swal("T'es trop forte", "", "success").then(() => {
         this.startNewGame();
       });
     }
-    swal("Loser");
+    swal("Loser", "", "error");
   };
 
   render() {
